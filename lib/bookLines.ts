@@ -1,4 +1,5 @@
 import { fetchSheetRows } from './sheets'
+import { searchBooks } from './search' // 👈 이 줄이 빠져서 에러가 났었습니다! 추가함.
 
 /**
  * A line to display in the hero overlay. It contains the
@@ -79,6 +80,7 @@ async function deriveLine(
     if (isbn) queryTerms.push(`isbn:${isbn}`)
     // Combine title and author as fallback search
     if (title) queryTerms.push(`${title} ${author}`)
+    
     // Use searchBooks to fetch a description from Naver/Google
     for (const q of queryTerms) {
       const results = await searchBooks(q, 1)
@@ -108,7 +110,7 @@ export async function getBookLines(limit = 24): Promise<BookLine[]> {
   if (!csv) return []
   const rows = await fetchSheetRows(csv)
   const lines: BookLine[] = []
-    for (const row of rows) {
+  for (const row of rows) {
     if (lines.length >= limit) break
     // Normalize ISBN and select only rows with a non-empty '첫문장' or similar quote field.
     const rawIsbn = (row['ISBN'] || row['isbn'] || row['isbn13'] || '').trim()
@@ -124,6 +126,18 @@ export async function getBookLines(limit = 24): Promise<BookLine[]> {
         break
       }
     }
+    
+    // Quote가 시트에 없으면 deriveLine을 통해 API 검색 시도
+    if (!quote) {
+        const title = row['제목'] || row['title'] || ''
+        const author = row['저자'] || row['author'] || ''
+        if(title) {
+            const derived = await deriveLine(title, author, isbn, row)
+            if(derived) lines.push({ text: derived, isbn: isbn || undefined })
+        }
+        continue
+    }
+
     // Skip this entry if there is no quote text in the sheet.
     if (!quote) continue
     // Split the quote into multiple lines by newline characters. A P column
