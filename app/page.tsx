@@ -1,11 +1,21 @@
+// app/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import HeroBackground from '@/components/HeroBackground';
 import ChapterRail from '@/components/ChapterRail';
 import SearchBar from '@/components/SearchBar';
 
 type HomeTab = 'sentence' | 'about';
+
+// 1. 메인 페이지용 SearchBar 래퍼 컴포넌트 (Suspense 적용)
+function MainSearchBar() {
+  return (
+    <Suspense fallback={<div className="h-12 w-full bg-gray-100 rounded-full animate-pulse" />}>
+      <SearchBar />
+    </Suspense>
+  );
+}
 
 export default function HomePage() {
   const [tab, setTab] = useState<HomeTab>('sentence');
@@ -91,10 +101,9 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 md:px-8">
-      {/* 상단 중앙 탭: 한 문장 / 소식  (돋보기는 기존 헤더 것 사용) */}
+      {/* 상단 중앙 탭 */}
       <div className="pt-6 md:pt-8 flex justify-center">
         <nav className="flex items-center gap-6 text-sm font-medium">
-          {/* 한 문장 탭 */}
           <button
             type="button"
             onClick={() => setTab('sentence')}
@@ -111,7 +120,6 @@ export default function HomePage() {
             )}
           </button>
 
-          {/* 소식 탭 */}
           <button
             type="button"
             onClick={() => setTab('about')}
@@ -130,14 +138,14 @@ export default function HomePage() {
         </nav>
       </div>
 
-      {/* 랜딩 히어로 영역: 탭에 따라 교체 */}
+      {/* 랜딩 히어로 영역 */}
       <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[60vh] overflow-hidden bg-white mt-4">
         {tab === 'sentence' ? <HeroBackground /> : <AboutHero />}
       </div>
 
-      {/* 검색 섹션 */}
+      {/* 검색 섹션 (Suspense 적용된 컴포넌트 사용) */}
       <section id="search" className="relative z-10 pt-14 md:pt-24 lg:pt-28">
-        <SearchBar />
+        <MainSearchBar />
       </section>
 
       {/* 오늘의 추천 / 장르로 보기 레일 */}
@@ -158,7 +166,6 @@ function AboutHero() {
     <section className="bg-neutral-50 h-full">
       <div className="mx-auto flex h-full max-w-6xl flex-col justify-center px-6 py-12 md:px-8 lg:py-16">
         <div className="grid gap-10 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] items-start">
-          {/* 소개 텍스트 */}
           <div>
             <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
               북묵, 한 권에서 시작되는 작은 공통장
@@ -177,7 +184,6 @@ function AboutHero() {
             </p>
           </div>
 
-          {/* 우측 이미지 블록 (나중에 실제 사진으로 교체 가능) */}
           <div className="relative h-56 sm:h-64 md:h-72 overflow-hidden rounded-3xl bg-neutral-200">
             <div className="absolute inset-0 bg-gradient-to-tr from-neutral-900 via-neutral-700 to-neutral-400 opacity-80" />
             <div className="relative z-10 flex h-full flex-col justify-end p-6 text-white">
