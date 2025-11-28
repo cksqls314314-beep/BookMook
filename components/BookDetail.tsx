@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { addToCart } from '@/lib/cart';
 import type { OneBook, Variant } from '@/lib/oneBook';
-import PassPriceTag from "./PassPriceTag";
+import PassPriceTag from "./PassPriceTag"; // ✅ import 확인
 
 function cn(...xs: Array<string | false | null | undefined>) {
   return xs.filter(Boolean).join(' ');
@@ -114,26 +114,29 @@ export default function BookDetail({ data }: Props) {
             </h1>
 
             <div className="space-y-2">
-              <div className="text-2xl font-semibold">
-                {displayPrice.toLocaleString()}원{' '}
-                {listPrice > 0 && displayPrice < listPrice && (
-                  <span className="align-middle text-base font-normal text-muted-foreground line-through">
-                    {listPrice.toLocaleString()}원
+              <div className="flex flex-col items-start gap-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold text-black">
+                    {displayPrice.toLocaleString()}원
                   </span>
-                )}
-              </div>
+                  {listPrice > 0 && displayPrice < listPrice && (
+                    <span className="text-lg font-normal text-muted-foreground line-through text-gray-400">
+                      {listPrice.toLocaleString()}원
+                    </span>
+                  )}
+                </div>
 
-	      {/* ✅ 북묵 패스 가격 추가 */}
+                {/* ✅ 북묵 패스 가격 추가 */}
                 {data.passPrice && data.passPrice < displayPrice && (
-                   <div className="mt-1 p-2 pl-0 rounded-lg">
+                   <div className="mt-1">
                       <PassPriceTag price={data.passPrice} className="text-lg" />
                    </div>
                 )}
               </div>
 
-              {/* 상태 배지만 간단하게 노출 */}
+              {/* 상태 배지 */}
               {grade && (
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 mt-2">
                   <span
                     className={cn(
                       'inline-flex items-center rounded-full px-4 py-1 text-xs font-medium text-white',
@@ -143,7 +146,7 @@ export default function BookDetail({ data }: Props) {
                     {gradeLabelMap[grade]}
                   </span>
                   {!allSoldOut && activeVariant?.count != null && (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-gray-500">
                       남은 수량 {activeVariant.count}권
                     </span>
                   )}
@@ -173,7 +176,7 @@ export default function BookDetail({ data }: Props) {
             <button
               type="button"
               onClick={openCart}
-              className="h-11 rounded-full border px-6 text-sm font-medium hover:bg-muted"
+              className="h-11 rounded-full border px-6 text-sm font-medium hover:bg-gray-100 transition"
             >
               장바구니 보기
             </button>
@@ -186,11 +189,11 @@ export default function BookDetail({ data }: Props) {
                 <section className="space-y-3 max-w-xl">
                   <h2 className="text-base font-semibold">소개</h2>
                   {metaLine && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-500">
                       {metaLine}
                     </p>
                   )}
-                  <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">
+                  <p className="whitespace-pre-line text-sm leading-relaxed text-gray-700">
                     {data.intro}
                   </p>
                 </section>
@@ -199,7 +202,7 @@ export default function BookDetail({ data }: Props) {
               {data.toc && (
                 <section className="space-y-3 max-w-xl">
                   <h2 className="text-base font-semibold">목차</h2>
-                  <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">
+                  <p className="whitespace-pre-line text-sm leading-relaxed text-gray-700">
                     {data.toc}
                   </p>
                 </section>
