@@ -2,21 +2,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react"; // Suspense 추가
 import type { Book } from "@/lib/search";
 import SearchResultCard from "@/components/SearchResultCard";
 import SearchBar from "@/components/SearchBar";
 
-/**
- * 검색 결과 페이지
- *
- * 쿼리 파라미터 `q`를 읽어서 API `/api/search`에 요청 후 결과를 표시합니다.
- * - 페이지 상단에 검색바를 한 번 더 배치해서 바로 재검색 가능
- * - 검색 결과가 없을 경우 안내 메시지를 보여주고,
- *   여러 결과를 그리드 형태로 나열합니다.
- * - 로딩 / 오류 상태도 처리합니다.
- */
-export default function SearchPage() {
+// ✅ 실제 검색 로직을 담은 내부 컴포넌트
+function SearchContent() {
   const params = useSearchParams();
   const q = (params.get("q") || "").trim();
   const [items, setItems] = useState<Book[]>([]);
@@ -24,7 +16,6 @@ export default function SearchPage() {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    // 검색어가 비어 있으면 결과 초기화
     if (!q) {
       setItems([]);
       setError("");
@@ -33,6 +24,7 @@ export default function SearchPage() {
     }
     setLoading(true);
     setError("");
+
     fetch(`/api/search?q=${encodeURIComponent(q)}`)
       .then((r) => {
         if (!r.ok) throw new Error("검색 실패");
@@ -51,12 +43,7 @@ export default function SearchPage() {
   }, [q]);
 
   return (
-    <main className="mx-auto max-w-6xl px-6 md:px-8 pb-16">
-      {/* 🔍 검색 결과 페이지 상단에도 검색바 배치 */}
-      <section className="pt-10 pb-6">
-        <SearchBar />
-      </section>
-
+    <>
       <header className="pb-6">
         <h1 className="text-2xl md:text-3xl font-semibold">검색 결과</h1>
         {q && (
@@ -71,23 +58,19 @@ export default function SearchPage() {
         )}
       </header>
 
-      {/* 검색어가 없을 때 안내 */}
       {!q && (
         <p className="mt-8 text-neutral-500">검색어를 입력해 주세요.</p>
       )}
 
       {loading && <p className="mt-8 text-neutral-500">검색 중...</p>}
-
       {error && <p className="mt-8 text-red-500">{error}</p>}
 
-      {/* 검색 결과 없음 */}
       {q && !loading && !error && items.length === 0 && (
         <p className="mt-8 text-neutral-500">
           검색 결과가 없습니다. 다른 검색어를 입력해 주세요.
         </p>
       )}
 
-      {/* 검색 결과 목록 */}
       {!loading && !error && items.length > 0 && (
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {items.map((b) => (
@@ -95,6 +78,23 @@ export default function SearchPage() {
           ))}
         </section>
       )}
+    </>
+  );
+}
+
+// ✅ 메인 페이지 컴포넌트 (Suspense 적용)
+export default function SearchPage() {
+  return (
+    <main className="mx-auto max-w-6xl px-6 md:px-8 pb-16">
+      <section className="pt-10 pb-6">
+        <Suspense fallback={<div className="h-12 w-full bg-gray-100 rounded-full animate-pulse" />}>
+          <SearchBar />
+        </Suspense>
+      </section>
+
+      <Suspense fallback={<p className="text-neutral-500">검색 정보를 불러오는 중...</p>}>
+        <SearchContent />
+      </Suspense>
     </main>
   );
 }
