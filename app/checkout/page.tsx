@@ -1,13 +1,13 @@
-
+// app/checkout/page.tsx
 'use client'
+
 import { useCart } from '@/components/cart/CartProvider'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   loadPaymentWidget,
   ANONYMOUS,
   type PaymentWidgetInstance,
-  type PaymentMethodsWidget,
-  type AgreementWidget,
+  // 에러나는 구체적인 타입들은 제거하고 any로 대체합니다.
 } from '@tosspayments/payment-widget-sdk'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -23,8 +23,9 @@ export default function CheckoutPage() {
   )
 
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null)
-  const methodsRef = useRef<PaymentMethodsWidget | null>(null)
-  const agreementRef = useRef<AgreementWidget | null>(null)
+  // 👇 타입을 any로 변경하여 빌드 에러 방지
+  const methodsRef = useRef<any>(null)
+  const agreementRef = useRef<any>(null)
   const orderIdRef = useRef<string>('')
 
   const [mounted, setMounted] = useState(false)
@@ -34,7 +35,6 @@ export default function CheckoutPage() {
   useEffect(() => setMounted(true), [])
 
   async function renderAll(amount: number) {
-    // 필수 컨테이너 존재 확인 (잘못된 셀렉터 호출 방지)
     if (!document.querySelector('#payment-widget') || !document.querySelector('#agreement')) {
       setDebug('no-container')
       return
@@ -55,7 +55,6 @@ export default function CheckoutPage() {
     })
     agreementRef.current = agreement
 
-    // iframe 존재 체크 (일부 확장/정책 충돌 대비)
     let found = !!document.querySelector('#payment-widget iframe')
     let tries = 0
     while (!found && tries < 5) {
@@ -68,7 +67,6 @@ export default function CheckoutPage() {
     setDebug(found ? 'render:done' : 'iframe:not-found')
   }
 
-  // ✅ 초기 렌더: 장바구니가 비어있으면 위젯 초기화하지 않음
   useEffect(() => {
     if (!mounted || !clientKey || items.length === 0) return
     orderIdRef.current = 'order_' + uuidv4().replace(/-/g, '').slice(0, 20)
@@ -76,16 +74,13 @@ export default function CheckoutPage() {
       console.error('renderAll error', e)
       setDebug('render:error')
     })
-    // items.length를 의존성에 포함 (비었을 때 렌더 중지/채워지면 렌더)
-  }, [mounted, clientKey, items.length]) // ← 핵심
+  }, [mounted, clientKey, items.length])
 
-  // 금액 변경 시 업데이트
   useEffect(() => {
     if (items.length === 0) return
     methodsRef.current?.updateAmount(totalAmount)
   }, [totalAmount, items.length])
 
-  // ✅ 장바구니가 비면 상태 초기화(재시도 루프/오류 방지)
   useEffect(() => {
     if (items.length === 0) {
       paymentWidgetRef.current = null
@@ -164,7 +159,6 @@ export default function CheckoutPage() {
         </div>
       </aside>
 
-      {/* 강제 표시: 일부 확장/스타일 충돌 대응 */}
       <style jsx global>{`
         #payment-widget { min-height: 360px; position: relative; }
         #payment-widget iframe { display: block !important; width: 100% !important; min-height: 340px !important; }
