@@ -1,6 +1,6 @@
 // app/guide/page.tsx
 import Link from "next/link";
-import { Ticket, ArrowRight, BookOpen, RefreshCw } from "lucide-react";
+import { Ticket, ArrowRight, RefreshCw } from "lucide-react";
 
 export default function GuidePage() {
   return (
@@ -12,27 +12,29 @@ export default function GuidePage() {
           가장 현명한 방법.
         </h1>
         <p className="text-lg md:text-xl text-neutral-500 leading-relaxed">
-          북묵은 책이 가진 가치만 남기고 거품은 뺐습니다.<br />
+          북묵에서는 지속가능한 연결을 목표합니다.<br />
           읽지 않는 책을 팔고, 읽고 싶은 책은 더 가볍게 만나보세요.
         </p>
       </section>
 
       {/* 북묵 패스 섹션 (ID: pass) */}
-      <section id="pass" className="bg-gray-50 py-20">
+      <section id="pass" className="bg-stone-50 py-20">
         <div className="mx-auto max-w-3xl px-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-sm font-bold mb-6">
+          {/* 뱃지 색상 변경: Blue -> Green */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-bold mb-6">
             <Ticket size={16} /> 북묵 패스
           </div>
           
           <h2 className="text-3xl md:text-4xl font-bold mb-12 leading-snug">
             내 책을 팔면,<br />
-            <span className="text-blue-600">마진 없는 가격</span>으로 환승.
+            {/* 강조 텍스트 색상 변경: Blue -> Green */}
+            <span className="text-emerald-600">보다 싼 가격</span>으로 도서 환승.
           </h2>
 
           <div className="grid gap-6 md:grid-cols-2">
             {/* 카드 1: 적립 */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-              <div className="h-12 w-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-6 text-neutral-700">
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+              <div className="h-12 w-12 bg-stone-100 rounded-2xl flex items-center justify-center mb-6 text-neutral-700">
                 <RefreshCw size={24} />
               </div>
               <h3 className="text-xl font-bold mb-2">1권 팔 때마다 1장 적립</h3>
@@ -43,37 +45,38 @@ export default function GuidePage() {
               </p>
             </div>
 
-            {/* 카드 2: 사용 */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
-              <div className="h-12 w-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-600">
+            {/* 카드 2: 사용 (색상 변경) */}
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 relative overflow-hidden">
+              <div className="h-12 w-12 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6 text-emerald-600">
                 <Ticket size={24} />
               </div>
               <h3 className="text-xl font-bold mb-2">매입가 + 20% 구매</h3>
               <p className="text-neutral-500 leading-relaxed">
-                패스를 사용하면 북묵의 모든 중고책을<br />
-                <strong className="text-black">도서 매입가 + 수수료 20%</strong> 가격으로<br />
+                도서 구매 시 자동으로 패스권 사용!<br />
+                <strong className="text-black">모든 도서를 매입가 + 20%</strong> 가격으로<br />
                 구매할 수 있습니다. 
               </p>
             </div>
           </div>
 
-          {/* 예시 계산기 UI 느낌 */}
-          <div className="mt-8 bg-neutral-900 text-white p-8 rounded-3xl shadow-xl">
+          {/* 가격 비교 예시 (다크 모드 유지 + 포인트 컬러 Green 변경) */}
+          <div className="mt-8 bg-[#1a1c1a] text-white p-8 rounded-3xl shadow-xl">
             <div className="text-sm text-white/60 mb-6 font-medium">가격 비교 예시</div>
             <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center opacity-50">
                 <span>일반 회원 구매가</span>
                 <span className="text-lg font-medium line-through">15,000원</span>
               </div>
-              <div className="h-px bg-white/20" />
+              <div className="h-px bg-white/10" />
               <div className="flex justify-between items-center">
-                <span className="flex items-center gap-2 font-bold text-blue-400">
-                  <Ticket size={18} /> 패스 회원 구매가
+                {/* 아이콘 및 텍스트 색상 변경: Blue -> Emerald */}
+                <span className="flex items-center gap-2 font-bold text-emerald-400">
+                  <Ticket size={18} /> 패스권 구매가
                 </span>
                 <div className="text-right">
-                  <span className="text-3xl font-bold">12,000원</span>
-                  <p className="text-xs text-white/50 mt-1 font-normal">
-                    (매입가 10,000원 + 운영비 2,000원)
+                  <span className="text-3xl font-bold text-white">12,000원</span>
+                  <p className="text-xs text-emerald-100/50 mt-1 font-normal">
+                    (매입가 10,000원 + 패스비 2,000원)
                   </p>
                 </div>
               </div>
@@ -88,7 +91,7 @@ export default function GuidePage() {
         
         <div className="space-y-12">
           <div className="flex gap-6">
-            <div className="flex-none text-4xl font-black text-gray-200">01</div>
+            <div className="flex-none text-4xl font-black text-stone-200">01</div>
             <div>
               <h3 className="text-lg font-bold mb-2">안 보는 책 매입 신청하기</h3>
               <p className="text-neutral-500">
@@ -99,7 +102,7 @@ export default function GuidePage() {
           </div>
           
           <div className="flex gap-6">
-            <div className="flex-none text-4xl font-black text-gray-200">02</div>
+            <div className="flex-none text-4xl font-black text-stone-200">02</div>
             <div>
               <h3 className="text-lg font-bold mb-2">검수 후 패스 지급</h3>
               <p className="text-neutral-500">
@@ -110,7 +113,7 @@ export default function GuidePage() {
           </div>
 
           <div className="flex gap-6">
-            <div className="flex-none text-4xl font-black text-gray-200">03</div>
+            <div className="flex-none text-4xl font-black text-stone-200">03</div>
             <div>
               <h3 className="text-lg font-bold mb-2">새로운 책으로 환승</h3>
               <p className="text-neutral-500">
@@ -121,8 +124,9 @@ export default function GuidePage() {
           </div>
         </div>
 
-        <div className="mt-16 pt-10 border-t border-gray-100 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 text-lg font-bold text-neutral-900 hover:text-blue-600 transition-colors">
+        <div className="mt-16 pt-10 border-t border-stone-100 text-center">
+          {/* 하단 링크 호버 색상 변경 */}
+          <Link href="/" className="inline-flex items-center gap-2 text-lg font-bold text-neutral-900 hover:text-emerald-600 transition-colors">
             북묵 둘러보기 <ArrowRight size={20} />
           </Link>
         </div>
