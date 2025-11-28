@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-const fromEmail = process.env.EMAIL_FROM || 'BookMook <no-reply@example.com>';
+const fromEmail = 'onboarding@resend.dev';
 
 if (!resendApiKey) {
   console.warn(
