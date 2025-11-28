@@ -18,7 +18,6 @@ const menuItems = [
 export default function Header() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  // exchangeTickets 타입 추가
   const [user, setUser] = useState<{ 
     email: string; 
     name: string | null; 
@@ -114,7 +113,6 @@ export default function Header() {
                 <div className="absolute right-0 top-full pt-2 w-64 z-50">
                   <div className="rounded-2xl border border-neutral-100 bg-white shadow-xl shadow-black/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     
-                    {/* 1. 프로필 영역 */}
                     <div className="px-5 py-4 border-b border-neutral-50 bg-white">
                       <div className="flex items-center justify-between mb-1">
                         <p className="text-sm font-bold text-black truncate">
@@ -131,15 +129,15 @@ export default function Header() {
                       </div>
                       <p className="text-xs text-neutral-400 truncate">{user.email}</p>
 
-                      {/* ⭐ [NEW] 북묵 패스 카드 영역 (클릭 시 가이드 페이지 이동) */}
                       <Link href="/guide#pass">
                         <div className="mt-3 rounded-xl bg-neutral-50 border border-neutral-100 p-3 flex items-center justify-between group hover:border-blue-200 hover:bg-blue-50/50 transition-all select-none cursor-pointer">
                           <div className="flex items-center gap-2.5">
                             <div className="bg-white p-1.5 rounded-lg shadow-sm border border-neutral-100 text-blue-600 group-hover:scale-110 transition-transform">
                                <Ticket size={16} strokeWidth={2.5} />
                             </div>
+                            {/* ✅ 텍스트 수정: 북묵 패스 */}
                             <span className="text-xs font-semibold text-neutral-500 group-hover:text-blue-600 transition-colors">
-                              북묵 패스란?
+                              북묵 패스
                             </span>
                           </div>
                           <div className="flex items-baseline gap-0.5">
@@ -153,7 +151,6 @@ export default function Header() {
 
                     </div>
                     
-                    {/* 2. 메뉴 링크 */}
                     <div className="py-1.5">
                       <Link href="/my/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm text-neutral-600 hover:bg-neutral-50 hover:text-black transition-colors">
                         <Package size={16} strokeWidth={1.8} />
@@ -165,7 +162,6 @@ export default function Header() {
                       </Link>
                     </div>
                     
-                    {/* 3. 로그아웃 */}
                     <div className="border-t border-neutral-50 pt-1.5 pb-1.5">
                       <button 
                         onClick={handleLogout}
@@ -220,7 +216,6 @@ export default function Header() {
             ) : (
               <div className="flex flex-col gap-4">
                  <p className="text-sm text-neutral-400">환영합니다, {user.nickname || user.name} 님</p>
-                 {/* 모바일에서도 클릭 시 가이드 페이지로 이동 */}
                  <Link href="/guide#pass" onClick={() => setOpen(false)} className="flex items-center gap-2 text-lg font-bold text-black hover:text-blue-600 transition-colors">
                     <Ticket size={20} className="text-blue-600" /> 패스: {user.exchangeTickets}장
                  </Link>

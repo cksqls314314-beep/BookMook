@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Book } from "@/lib/getRecentBooks";
 import { formatKRW } from "@/lib/getRecentBooks";
-import PassPriceTag from "./PassPriceTag"; // ✅ import
+import PassPriceTag from "./PassPriceTag";
 
 type Props = {
   book: Book;
@@ -15,7 +15,6 @@ type Props = {
 export default function BookCard({ book, href = "#" }: Props) {
   const sell = book.priceSell || 0;
   const list = book.priceList || 0;
-  // 패스 가격 (없으면 안 보여줌)
   const passPrice = book.passPrice; 
 
   return (
@@ -42,7 +41,6 @@ export default function BookCard({ book, href = "#" }: Props) {
         )}
 
         <div className="mt-3 flex flex-col gap-1">
-          {/* 1. 일반 판매가 */}
           <div className="flex items-baseline gap-2">
             <span className="text-[15px] font-bold text-black">{formatKRW(sell)}</span>
             {list > 0 && list > sell && (
@@ -52,9 +50,9 @@ export default function BookCard({ book, href = "#" }: Props) {
             )}
           </div>
 
-          {/* 2. 북묵 패스 가격 (있을 때만 표시) */}
+          {/* ✅ 툴팁 끄기 (설명 기능 삭제) */}
           {passPrice && passPrice < sell && (
-            <PassPriceTag price={passPrice} />
+            <PassPriceTag price={passPrice} showTooltip={false} />
           )}
         </div>
       </div>

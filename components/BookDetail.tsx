@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { addToCart } from '@/lib/cart';
 import type { OneBook, Variant } from '@/lib/oneBook';
-import PassPriceTag from "./PassPriceTag"; // ✅ import 확인
+import PassPriceTag from "./PassPriceTag";
 
 function cn(...xs: Array<string | false | null | undefined>) {
   return xs.filter(Boolean).join(' ');
@@ -28,7 +28,6 @@ const gradeColorMap: Record<Variant['grade'], string> = {
 };
 
 export default function BookDetail({ data }: Props) {
-  // 재고가 있는 첫 등급을 기본 선택
   const firstGrade = useMemo<Variant['grade'] | null>(() => {
     for (const g of gradeOrder) {
       const v = data.variants.find((v) => v.grade === g && v.count > 0);
@@ -76,7 +75,6 @@ export default function BookDetail({ data }: Props) {
     window.location.href = '/cart';
   }
 
-  // 메타 정보는 상단에서 빼고 아래 "소개" 섹션에서만 보여줌
   const metaLine = [data.author, data.publisher, data.pubDate]
     .filter(Boolean)
     .join(' · ');
@@ -107,36 +105,35 @@ export default function BookDetail({ data }: Props) {
 
         {/* 오른쪽: 정보 영역 */}
         <section className="flex flex-col gap-8">
-          {/* 상단 헤드라인: 제목 / 가격 / 상태 배지 */}
           <header className="space-y-4">
             <h1 className="text-2xl font-semibold leading-tight md:text-3xl">
               {data.title}
             </h1>
 
-            <div className="space-y-2">
-              <div className="flex flex-col items-start gap-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-black">
-                    {displayPrice.toLocaleString()}원
+            <div className="space-y-3">
+              {/* ✅ 가격 영역 (수정됨: 가로 정렬) */}
+              <div className="flex flex-wrap items-baseline gap-3">
+                {/* 판매가 */}
+                <span className="text-2xl font-bold text-black">
+                  {displayPrice.toLocaleString()}원
+                </span>
+                
+                {/* 정가 */}
+                {listPrice > 0 && displayPrice < listPrice && (
+                  <span className="text-lg font-normal text-muted-foreground line-through text-gray-400">
+                    {listPrice.toLocaleString()}원
                   </span>
-                  {listPrice > 0 && displayPrice < listPrice && (
-                    <span className="text-lg font-normal text-muted-foreground line-through text-gray-400">
-                      {listPrice.toLocaleString()}원
-                    </span>
-                  )}
-                </div>
+                )}
 
-                {/* ✅ 북묵 패스 가격 추가 */}
+                {/* 북묵 패스 가격 */}
                 {data.passPrice && data.passPrice < displayPrice && (
-                   <div className="mt-1">
-                      <PassPriceTag price={data.passPrice} className="text-lg" />
-                   </div>
+                   <PassPriceTag price={data.passPrice} className="text-lg" showTooltip={true} />
                 )}
               </div>
 
               {/* 상태 배지 */}
               {grade && (
-                <div className="flex flex-wrap items-center gap-2 mt-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span
                     className={cn(
                       'inline-flex items-center rounded-full px-4 py-1 text-xs font-medium text-white',
