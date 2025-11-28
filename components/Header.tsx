@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { Search, User, LogOut, Package, Settings, Menu, X, PenLine } from 'lucide-react';
+import { Search, User, LogOut, Package, Settings, Menu, X, PenLine, Ticket } from 'lucide-react';
 
 const CartCount = dynamic(() => import("@/components/CartCount"), { ssr: false });
 
@@ -18,7 +18,14 @@ const menuItems = [
 export default function Header() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<{ email: string; name: string | null; nickname: string | null } | null>(null);
+  // exchangeTickets 타입 추가
+  const [user, setUser] = useState<{ 
+    email: string; 
+    name: string | null; 
+    nickname: string | null; 
+    exchangeTickets: number; 
+  } | null>(null);
+  
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -56,7 +63,6 @@ export default function Header() {
       <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center px-4 py-4 md:px-6">
           
-          {/* 좌측 메뉴 버튼 */}
           <div className="flex w-24 items-center justify-start">
             <button
               type="button"
@@ -68,17 +74,13 @@ export default function Header() {
             </button>
           </div>
 
-          {/* 가운데 로고 */}
           <div className="flex flex-1 items-center justify-center">
             <Link href="/" className="select-none text-xl font-bold tracking-[0.35em] text-black">
               BOOKMOOK
             </Link>
           </div>
 
-          {/* 오른쪽 아이콘들 */}
           <div className="flex w-24 items-center justify-end gap-1">
-            
-            {/* 검색 */}
             <button
               type="button"
               onClick={() => {
@@ -90,7 +92,6 @@ export default function Header() {
               <Search size={20} strokeWidth={1.8} />
             </button>
 
-            {/* 유저 아이콘 */}
             <div 
               className="relative"
               onMouseEnter={() => setIsUserMenuOpen(true)}
@@ -110,31 +111,47 @@ export default function Header() {
 
               {/* 드롭다운 메뉴 */}
               {user && isUserMenuOpen && (
-                // pt-2로 호버 터널 문제 해결
-                <div className="absolute right-0 top-full pt-2 w-60 z-50">
+                <div className="absolute right-0 top-full pt-2 w-64 z-50">
                   <div className="rounded-2xl border border-neutral-100 bg-white shadow-xl shadow-black/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     
-                    {/* ✅ [수정] 상단 정보: Signed in as 제거, '님' 추가 */}
-                    <div className="px-5 py-4 border-b border-neutral-50 bg-neutral-50/50">
-                      <div className="flex flex-col">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-bold text-black truncate">
-                            {user.nickname || user.name || '이름 없음'} 님
-                          </p>
-                          {/* 별명 없으면 버튼 노출 */}
-                          {!user.nickname && (
-                            <Link 
-                              href="/my/profile" 
-                              className="text-[10px] flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium transition-colors whitespace-nowrap"
-                            >
-                              <PenLine size={10} /> 별명 짓기
-                            </Link>
-                          )}
-                        </div>
-                        <p className="text-xs text-neutral-400 truncate mt-1">{user.email}</p>
+                    {/* 1. 프로필 영역 */}
+                    <div className="px-5 py-4 border-b border-neutral-50 bg-white">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-sm font-bold text-black truncate">
+                          {user.nickname || user.name || '이름 없음'} 님
+                        </p>
+                        {!user.nickname && (
+                          <Link 
+                            href="/my/profile" 
+                            className="text-[10px] flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium transition-colors whitespace-nowrap"
+                          >
+                            <PenLine size={10} /> 별명 짓기
+                          </Link>
+                        )}
                       </div>
+                      <p className="text-xs text-neutral-400 truncate">{user.email}</p>
+
+                      {/* ⭐ [NEW] 북묵 패스 카드 영역 */}
+                      <div className="mt-3 rounded-xl bg-neutral-50 border border-neutral-100 p-3 flex items-center justify-between group hover:border-neutral-200 transition-colors select-none">
+                        <div className="flex items-center gap-2.5">
+                          <div className="bg-white p-1.5 rounded-lg shadow-sm border border-neutral-100 text-indigo-600">
+                             <Ticket size={16} strokeWidth={2.5} />
+                          </div>
+                          <span className="text-xs font-semibold text-neutral-500 group-hover:text-neutral-700 transition-colors">
+                            북묵 패스
+                          </span>
+                        </div>
+                        <div className="flex items-baseline gap-0.5">
+                          <span className="text-lg font-bold text-black tabular-nums">
+                            {user.exchangeTickets || 0}
+                          </span>
+                          <span className="text-xs text-neutral-400 font-medium">장</span>
+                        </div>
+                      </div>
+
                     </div>
                     
+                    {/* 2. 메뉴 링크 */}
                     <div className="py-1.5">
                       <Link href="/my/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm text-neutral-600 hover:bg-neutral-50 hover:text-black transition-colors">
                         <Package size={16} strokeWidth={1.8} />
@@ -146,6 +163,7 @@ export default function Header() {
                       </Link>
                     </div>
                     
+                    {/* 3. 로그아웃 */}
                     <div className="border-t border-neutral-50 pt-1.5 pb-1.5">
                       <button 
                         onClick={handleLogout}
@@ -155,12 +173,12 @@ export default function Header() {
                         <span>로그아웃</span>
                       </button>
                     </div>
+
                   </div>
                 </div>
               )}
             </div>
 
-            {/* 장바구니 */}
             <Link href="/cart" className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/5 transition-colors text-black">
               <svg viewBox="0 0 24 24" className="h-5 w-5" stroke="currentColor" strokeWidth={1.8} fill="none" strokeLinecap="round">
                 <path d="M6 6h15l-1.5 9h-12z" />
@@ -176,10 +194,9 @@ export default function Header() {
         </div>
       </header>
 
-      {/* 모바일 메뉴 (동일하게 유지) */}
+      {/* 모바일 메뉴 */}
       {open && (
         <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-md animate-in fade-in duration-200">
-           {/* ... (기존 모바일 메뉴 코드와 동일, 필요하면 복붙해드립니다) ... */}
            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
             <span className="text-sm uppercase tracking-[0.2em] text-neutral-500">Menu</span>
             <button type="button" onClick={() => setOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/5 transition-colors">
@@ -201,6 +218,9 @@ export default function Header() {
             ) : (
               <div className="flex flex-col gap-4">
                  <p className="text-sm text-neutral-400">환영합니다, {user.nickname || user.name} 님</p>
+                 <div className="flex items-center gap-2 text-lg font-bold text-black">
+                    <Ticket size={20} /> 패스: {user.exchangeTickets}장
+                 </div>
                  <button onClick={handleLogout} className="text-xl text-left text-red-500 hover:text-red-700">로그아웃</button>
               </div>
             )}
