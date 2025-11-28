@@ -20,8 +20,9 @@ export async function GET() {
       email: true, 
       name: true,
       nickname: true,
-      phone: true,       // ✅ 추가
-      isVerified: true,  // ✅ 추가
+      phone: true,
+      isVerified: true,
+      exchangeTickets: true, // ✅ 티켓 개수 추가!
     }, 
   });
 

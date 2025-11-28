@@ -131,23 +131,25 @@ export default function Header() {
                       </div>
                       <p className="text-xs text-neutral-400 truncate">{user.email}</p>
 
-                      {/* ⭐ [NEW] 북묵 패스 카드 영역 */}
-                      <div className="mt-3 rounded-xl bg-neutral-50 border border-neutral-100 p-3 flex items-center justify-between group hover:border-neutral-200 transition-colors select-none">
-                        <div className="flex items-center gap-2.5">
-                          <div className="bg-white p-1.5 rounded-lg shadow-sm border border-neutral-100 text-indigo-600">
-                             <Ticket size={16} strokeWidth={2.5} />
+                      {/* ⭐ [NEW] 북묵 패스 카드 영역 (클릭 시 가이드 페이지 이동) */}
+                      <Link href="/guide#pass">
+                        <div className="mt-3 rounded-xl bg-neutral-50 border border-neutral-100 p-3 flex items-center justify-between group hover:border-blue-200 hover:bg-blue-50/50 transition-all select-none cursor-pointer">
+                          <div className="flex items-center gap-2.5">
+                            <div className="bg-white p-1.5 rounded-lg shadow-sm border border-neutral-100 text-blue-600 group-hover:scale-110 transition-transform">
+                               <Ticket size={16} strokeWidth={2.5} />
+                            </div>
+                            <span className="text-xs font-semibold text-neutral-500 group-hover:text-blue-600 transition-colors">
+                              북묵 패스란?
+                            </span>
                           </div>
-                          <span className="text-xs font-semibold text-neutral-500 group-hover:text-neutral-700 transition-colors">
-                            북묵 패스
-                          </span>
+                          <div className="flex items-baseline gap-0.5">
+                            <span className="text-lg font-bold text-black tabular-nums group-hover:text-blue-600 transition-colors">
+                              {user.exchangeTickets || 0}
+                            </span>
+                            <span className="text-xs text-neutral-400 font-medium group-hover:text-blue-400">장</span>
+                          </div>
                         </div>
-                        <div className="flex items-baseline gap-0.5">
-                          <span className="text-lg font-bold text-black tabular-nums">
-                            {user.exchangeTickets || 0}
-                          </span>
-                          <span className="text-xs text-neutral-400 font-medium">장</span>
-                        </div>
-                      </div>
+                      </Link>
 
                     </div>
                     
@@ -218,10 +220,11 @@ export default function Header() {
             ) : (
               <div className="flex flex-col gap-4">
                  <p className="text-sm text-neutral-400">환영합니다, {user.nickname || user.name} 님</p>
-                 <div className="flex items-center gap-2 text-lg font-bold text-black">
-                    <Ticket size={20} /> 패스: {user.exchangeTickets}장
-                 </div>
-                 <button onClick={handleLogout} className="text-xl text-left text-red-500 hover:text-red-700">로그아웃</button>
+                 {/* 모바일에서도 클릭 시 가이드 페이지로 이동 */}
+                 <Link href="/guide#pass" onClick={() => setOpen(false)} className="flex items-center gap-2 text-lg font-bold text-black hover:text-blue-600 transition-colors">
+                    <Ticket size={20} className="text-blue-600" /> 패스: {user.exchangeTickets}장
+                 </Link>
+                 <button onClick={handleLogout} className="text-xl text-left text-red-500 hover:text-red-700 mt-2">로그아웃</button>
               </div>
             )}
           </nav>
