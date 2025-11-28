@@ -1,11 +1,9 @@
+// lib/bookLines.ts
 import { fetchSheetRows } from './sheets'
-import { searchBooks } from './search' // 👈 이 줄이 빠져서 에러가 났었습니다! 추가함.
+// import { searchBooks } ... <- 이제 API 검색을 안 하므로 이 줄은 필요 없습니다!
 
 /**
- * A line to display in the hero overlay. It contains the
- * line of text and an optional ISBN to link to. If the
- * ISBN is undefined, the line will still be displayed but
- * will not be clickable.
+ * 화면에 보여줄 문장과 ISBN 정보
  */
 export interface BookLine {
   text: string
@@ -13,144 +11,62 @@ export interface BookLine {
 }
 
 /**
- * Normalize whitespace in a string by collapsing multiple
- * spaces and trimming leading/trailing whitespace. Also
- * remove HTML tags if present.
+ * 텍스트 정리 (HTML 태그 제거 및 공백 정리)
  */
 function cleanText(raw: string): string {
   if (!raw) return ''
-  // Strip HTML tags from API results
+  // HTML 태그 제거
   const withoutTags = raw.replace(/<[^>]*>/g, '')
-  // Collapse whitespace
+  // 연속된 공백을 하나로 줄임
   return withoutTags.replace(/\s+/g, ' ').trim()
 }
 
 /**
- * Extract the first sentence from a given description. A
- * sentence is determined by the first occurrence of a
- * period, question mark, or exclamation mark. If none
- * exist, the entire description is returned.
- */
-function getFirstSentence(desc: string): string {
-  const cleaned = cleanText(desc)
-  const match = cleaned.match(/[.?!]/)
-  if (match) {
-    const index = match.index ?? cleaned.length
-    return cleaned.slice(0, index + 1).trim()
-  }
-  return cleaned
-}
-
-/**
- * Attempt to find a single meaningful line for a book.
- * It first looks for a column in the sheet that might
- * already contain a quote or sentence. If none exists,
- * it uses the searchBooks function to fetch the book
- * description from an external API (Naver or Google Books)
- * and extracts the first sentence. As a last resort it
- * falls back to the book's title.
- */
-async function deriveLine(
-  title: string,
-  author: string,
-  isbn: string,
-  row: Record<string, string>
-): Promise<string> {
-  // 1) Check for predefined quote columns in the sheet
-  // Prioritise the '첫문장' column (First sentence) if present, followed by
-  // other possible quote fields. The order here matters.
-  const quoteKeys = [
-    '첫문장',
-    '문구',
-    '명언',
-    '한줄평',
-    'quote',
-    'firstSentence',
-  ]
-  for (const key of quoteKeys) {
-    const direct = row[key]
-    if (direct && direct.trim()) {
-      return cleanText(direct)
-    }
-  }
-
-  // 2) Attempt to fetch a description via external API
-  try {
-    const queryTerms = []
-    if (isbn) queryTerms.push(`isbn:${isbn}`)
-    // Combine title and author as fallback search
-    if (title) queryTerms.push(`${title} ${author}`)
-    
-    // Use searchBooks to fetch a description from Naver/Google
-    for (const q of queryTerms) {
-      const results = await searchBooks(q, 1)
-      if (results && results.length > 0) {
-        const desc = results[0].description || ''
-        const sentence = getFirstSentence(desc)
-        if (sentence) return sentence
-      }
-    }
-  } catch {
-    // Ignore errors from external API
-  }
-
-  // 3) Fallback to the title if no description is available
-  return cleanText(title)
-}
-
-/**
- * Fetch lines from the Google Sheet inventory. For each book,
- * it derives a single line using deriveLine(). The number of
- * lines returned can be limited via the limit parameter. Books
- * without a title are skipped. Results are ordered as they
- * appear in the sheet.
+ * 구글 시트에서 '첫문장'이 있는 책만 가져오기
+ * - 외부 API 검색 기능 제거 (오작동/영어 문장 방지)
+ * - 오직 시트의 P열(첫문장) 데이터만 신뢰함
  */
 export async function getBookLines(limit = 24): Promise<BookLine[]> {
   const csv = process.env.NEXT_PUBLIC_INVENTORY_CSV_URL
   if (!csv) return []
+  
   const rows = await fetchSheetRows(csv)
   const lines: BookLine[] = []
+
   for (const row of rows) {
+    // 이미 충분한 개수를 모았으면 중단
     if (lines.length >= limit) break
-    // Normalize ISBN and select only rows with a non-empty '첫문장' or similar quote field.
+
+    // 1. ISBN 정리 (숫자만 남김)
     const rawIsbn = (row['ISBN'] || row['isbn'] || row['isbn13'] || '').trim()
     const isbn = rawIsbn.replace(/[^0-9Xx]/g, '')
-    // Attempt to find a quote; prioritise the '첫문장' column.
-    const quoteKeys = ['첫문장', '문구', '명언', '한줄평', 'quote', 'firstSentence']
-    let quote: string | undefined
-    for (const key of quoteKeys) {
-      const val = row[key]
-      if (val && val.trim()) {
-        // Do not call cleanText here; we need to preserve line breaks.
-        quote = String(val)
-        break
-      }
-    }
+
+    // 2. '첫문장' 컬럼 확인 (한글 칼럼명 우선)
+    // 시트의 헤더가 '첫문장' 혹은 'firstSentence' 등이어야 함
+    const quoteRaw = row['첫문장'] || row['문구'] || row['명언'] || row['한줄평'] || '';
     
-    // Quote가 시트에 없으면 deriveLine을 통해 API 검색 시도
-    if (!quote) {
-        const title = row['제목'] || row['title'] || ''
-        const author = row['저자'] || row['author'] || ''
-        if(title) {
-            const derived = await deriveLine(title, author, isbn, row)
-            if(derived) lines.push({ text: derived, isbn: isbn || undefined })
-        }
-        continue
+    // 3. 문장이 없으면 과감히 건너뜀 (API 검색 로직 삭제됨)
+    if (!quoteRaw || !quoteRaw.trim()) {
+      continue; 
     }
 
-    // Skip this entry if there is no quote text in the sheet.
-    if (!quote) continue
-    // Split the quote into multiple lines by newline characters. A P column
-    // cell may contain multiple sentences separated by line breaks. Each
-    // non-empty trimmed part becomes its own BookLine. We stop adding
-    // lines once we reach the limit.
-    const parts = quote.split(/\r?\n/)
+    // 4. 문장 다듬기 및 추가
+    // 엔터(줄바꿈)가 있을 수 있으므로 줄별로 처리
+    const parts = quoteRaw.split(/\r?\n/)
+    
     for (const partRaw of parts) {
       if (lines.length >= limit) break
+      
       const part = cleanText(partRaw)
-      if (!part) continue
-      lines.push({ text: part, isbn: isbn || undefined })
+      // 너무 짧거나(2글자 미만) 비어있으면 무시
+      if (!part || part.length < 2) continue
+      
+      lines.push({ 
+        text: part, 
+        isbn: isbn || undefined 
+      })
     }
   }
+  
   return lines
 }
