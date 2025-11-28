@@ -19,6 +19,7 @@ export type OneBook = {
   coverUrl?: string;
   priceSell: number;
   listPrice?: number;
+  passPrice?: number;
   variants: Variant[];
   toc?: string;
   intro?: string;
@@ -52,6 +53,8 @@ export async function getBookByIsbn(isbn: string): Promise<OneBook | null> {
   const publisher = pick(r0, ["출판사", "publisher"]);
   const pubDate = pick(r0, ["출간일", "pubDate"]);
   const listPrice = toNumber(pick(r0, ["정가", "listprice", "price"]));
+  const buyPrice = toNumber(pick(r0, ["매입가", "buyPrice", "buy"]));
+  const passPrice = buyPrice > 0 ? Math.round((buyPrice * 1.2) / 10) * 10 : undefined;
   const coverUrl = normalizeCoverUrl(pick(r0, ["표지URL", "표지", "cover", "image"]));
   const toc = pick(r0, ["목차", "L", "toc"]);
   const intro = pick(r0, ["소개", "M", "intro"]);
@@ -84,6 +87,7 @@ export async function getBookByIsbn(isbn: string): Promise<OneBook | null> {
     coverUrl,
     priceSell,
     listPrice: listPrice || undefined,
+    passPrice,
     variants,
     toc,
     intro,

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { addToCart } from '@/lib/cart';
 import type { OneBook, Variant } from '@/lib/oneBook';
+import PassPriceTag from "./PassPriceTag";
 
 function cn(...xs: Array<string | false | null | undefined>) {
   return xs.filter(Boolean).join(' ');
@@ -119,6 +120,14 @@ export default function BookDetail({ data }: Props) {
                   <span className="align-middle text-base font-normal text-muted-foreground line-through">
                     {listPrice.toLocaleString()}원
                   </span>
+                )}
+              </div>
+
+	      {/* ✅ 북묵 패스 가격 추가 */}
+                {data.passPrice && data.passPrice < displayPrice && (
+                   <div className="mt-1 p-2 pl-0 rounded-lg">
+                      <PassPriceTag price={data.passPrice} className="text-lg" />
+                   </div>
                 )}
               </div>
 
