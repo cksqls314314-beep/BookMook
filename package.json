@@ -1,0 +1,35 @@
+{
+  "name": "bookmook",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0",
+    "@tosspayments/payment-widget-sdk": "^0.12.1",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "jose": "^6.1.2",
+    "lucide-react": "^0.552.0",
+    "next": "14.2.5",
+    "papaparse": "^5.5.3",
+    "prisma": "^5.18.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "resend": "^6.5.2",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5",
+    "postcss": "8.4.47",
+    "tailwindcss": "3.4.13",
+    "typescript": "5.4.5"
+  }
+}
