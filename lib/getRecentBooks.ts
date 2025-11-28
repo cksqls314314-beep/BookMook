@@ -29,11 +29,11 @@ export const formatKRW = (n: number) =>
  * 구글시트 CSV에서 최신 N권을 가져온다.
  * - 표지: imageUrl 정규화 + 플레이스홀더 처리
  * - 가격: H(판매가), F(정가)
- * - 최상단 행부터 slice
+ * * - 최상단 행부터 slice
  */
 export async function getRecentBooksFromSheet(limit = 12): Promise<Book[]> {
   const csv = process.env.NEXT_PUBLIC_INVENTORY_CSV_URL;
-  if (!csv) throw new Error("Missing NEXT_PUBLIC_INVENTORY_CSV_URL");
+  if (!csv) return []; // CSV URL이 없으면 빈 배열 반환 (에러 방지)
 
   const rows = await fetchSheetRows(csv);
 
@@ -53,7 +53,8 @@ export async function getRecentBooksFromSheet(limit = 12): Promise<Book[]> {
       isbn,
       title,
       author,
-      coverUrl: normalizeCoverUrl(cover, title),
+      // 🛠️ 수정됨: 인자를 1개(cover)만 넘기도록 변경
+      coverUrl: normalizeCoverUrl(cover), 
       priceSell,
       priceList,
     };
