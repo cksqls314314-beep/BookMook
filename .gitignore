@@ -1,4 +1,5 @@
 node_modules
+all_code.txt
 .next
 .env*
 .DS_Store
