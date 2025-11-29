@@ -7,7 +7,7 @@ import Image from "next/image";
 import { Ticket, ArrowRight, Check, Info, RefreshCw } from "lucide-react";
 
 export default function GuidePage() {
-  const [activeTab, setActiveTab] = useState<'policy' | 'pass'>('pass'); // 기본 탭을 '북묵 패스'로 변경
+  const [activeTab, setActiveTab] = useState<'policy' | 'pass'>('pass');
 
   return (
     <main className="bg-white min-h-screen pb-24">
@@ -75,10 +75,10 @@ function PricingPolicyContent() {
       
       {/* 섹션 A: 판매가 정책 */}
       <div>
-        <h2 className="text-3xl font-bold mb-6">투명한 가격 정책</h2>
+        <h2 className="text-3xl font-bold mb-6">가격 정책</h2>
         <p className="text-neutral-500 text-lg mb-10 leading-relaxed break-keep">
-          북묵은 책의 상태와 출간일을 기준으로<br/>
-          기계적이고 공정한 가격을 책정합니다.
+          책의 상태와 출간일을 기준으로<br/>
+          공정한 가격을 책정합니다.
         </p>
 
         <div className="grid gap-4">
@@ -186,7 +186,7 @@ function BookMookPassContent() {
         </p>
       </div>
 
-      {/* ⭐ 실제 책 예시 카드 (다크 모드) - 실제 데이터 적용 */}
+      {/* ⭐ 실제 책 예시 카드 (다크 모드) */}
       <div className="relative overflow-hidden rounded-[32px] bg-[#1a1c1a] text-white shadow-2xl">
         {/* 배경 데코 */}
         <div className="absolute top-0 right-0 h-80 w-80 translate-x-1/4 -translate-y-1/4 rounded-full bg-emerald-600/20 blur-[80px]" />
@@ -195,17 +195,17 @@ function BookMookPassContent() {
           <div className="text-sm font-medium text-white/50 mb-6">실제 적용 예시</div>
           
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-            {/* 책 썸네일 */}
+            {/* 책 썸네일 - 보내주신 네이버 URL 적용 */}
             <div className="relative w-32 md:w-40 aspect-[1/1.5] rounded-lg overflow-hidden shadow-lg flex-none bg-neutral-800 border border-white/10">
                <Image 
-                 src="https://image.aladin.co.kr/product/34672/22/cover500/k302933346_2.jpg" 
+                 src="https://shopping-phinf.pstatic.net/main_5650400/56504009578.20250830091352.jpg" 
                  alt="시대예보 표지"
                  fill
                  className="object-cover"
                />
             </div>
 
-            {/* 가격 정보 (테이블 데이터 기반) */}
+            {/* 가격 정보 */}
             <div className="flex-1 w-full space-y-5">
               <div>
                 <h3 className="text-xl font-bold leading-tight">시대예보: 경량문명의 탄생</h3>
@@ -219,7 +219,6 @@ function BookMookPassContent() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-white/70">일반 회원 구매가</span>
-                  {/* 실제 판매가 반영 */}
                   <span className="text-lg font-medium">17,200원</span>
                 </div>
                 
@@ -237,7 +236,7 @@ function BookMookPassContent() {
                   </div>
                 </div>
                 <p className="text-right text-xs text-emerald-400/60">
-                  (매입가 7,900원 + 패스료 20%)
+                  (매입가 7,900원 + 패스료 2,000원)
                 </p>
               </div>
             </div>
