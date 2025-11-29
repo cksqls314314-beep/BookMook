@@ -7,7 +7,7 @@ interface Props {
   price: number;
   className?: string;
   align?: 'left' | 'right' | 'center';
-  showTooltip?: boolean; // ✅ 툴팁 표시 여부 옵션 추가
+  showTooltip?: boolean;
 }
 
 export default function PassPriceTag({ price, className = '', align = 'left', showTooltip = true }: Props) {
@@ -34,8 +34,10 @@ export default function PassPriceTag({ price, className = '', align = 'left', sh
           <div className="font-bold mb-1 text-emerald-400 flex items-center gap-1">
             <Ticket size={10} /> 북묵 패스 혜택가
           </div>
+          
+          {/* 👇 텍스트 수정됨 */}
           <p className="leading-relaxed text-white/80">
-            도서 매입가에 수수료 20%만 더한 가격입니다. (마진 0원)
+            북묵에 판매하신 책 권 수만큼 할인된 가격으로 구매할 수 있습니다.
           </p>
           
           {/* 말풍선 꼬리 */}
