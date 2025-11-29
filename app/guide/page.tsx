@@ -4,14 +4,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Ticket, ArrowRight, Check, Info } from "lucide-react";
+import { Ticket, ArrowRight, Check, Info, RefreshCw } from "lucide-react";
 
 export default function GuidePage() {
   const [activeTab, setActiveTab] = useState<'policy' | 'pass'>('policy');
 
   return (
     <main className="bg-white min-h-screen pb-24">
-      {/* 1. 상단 히어로 섹션 (고정 멘트) */}
+      {/* 1. 상단 히어로 섹션 */}
       <section className="mx-auto max-w-3xl px-6 pt-20 pb-12 md:pt-32 md:pb-16 text-center md:text-left">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight text-neutral-900 mb-6 break-keep">
           책을 사랑하는 <br />
@@ -23,7 +23,7 @@ export default function GuidePage() {
         </p>
       </section>
 
-      {/* 2. 탭 네비게이션 (토스 스타일) */}
+      {/* 2. 탭 네비게이션 */}
       <section className="sticky top-[72px] z-30 bg-white/80 backdrop-blur-md border-b border-neutral-100">
         <div className="mx-auto max-w-3xl px-6 flex gap-8">
           <button
@@ -96,10 +96,11 @@ function PricingPolicyContent() {
             sellRate="55%" 
             buyRate="22%" 
           />
+          {/* ✅ 수정됨: '낡음' -> '실속급' */}
           <GradeCard 
             grade="C" 
-            title="중급 (낡음)" 
-            desc="밑줄이나 메모, 변색이 있는 도서" 
+            title="실속급 (흔적 있음)" 
+            desc="밑줄이나 메모가 있지만 읽는 데 지장 없는 도서" 
             sellRate="40%" 
             buyRate="15%" 
           />
@@ -165,7 +166,7 @@ function GradeCard({ grade, title, desc, sellRate, buyRate }: { grade: string, t
 }
 
 // ------------------------------------------------------------------
-// 탭 2: 북묵 패스 콘텐츠 (수정된 예시 적용)
+// 탭 2: 북묵 패스 콘텐츠
 // ------------------------------------------------------------------
 function BookMookPassContent() {
   return (
@@ -178,11 +179,13 @@ function BookMookPassContent() {
         </div>
         <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-snug break-keep">
           내 책을 팔면,<br />
-          <span className="text-emerald-600">도매가 수준</span>으로 환승합니다.
+          {/* ✅ 수정됨: 도매가 -> 가장 합리적인 가격 */}
+          <span className="text-emerald-600">가장 합리적인 가격</span>으로 환승합니다.
         </h2>
         <p className="text-neutral-500 text-lg leading-relaxed">
           북묵에 책을 판매하면 '북묵 패스'를 드립니다.<br/>
-          패스가 있다면 마진을 뺀 <b>[매입가 + 수수료 20%]</b> 가격으로 구매할 수 있습니다.
+          {/* ✅ 수정됨: 수수료 -> 패스료 */}
+          패스가 있다면 마진을 뺀 <b>[매입가 + 패스료 20%]</b> 가격으로 구매할 수 있습니다.
         </p>
       </div>
 
@@ -197,7 +200,6 @@ function BookMookPassContent() {
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
             {/* 책 썸네일 */}
             <div className="relative w-32 md:w-40 aspect-[1/1.5] rounded-lg overflow-hidden shadow-lg flex-none bg-neutral-800">
-               {/* 실제 이미지를 못 가져올 경우를 대비해 컬러 박스나 플레이스홀더 사용 */}
                <Image 
                  src="https://image.aladin.co.kr/product/34672/22/cover500/k302933346_2.jpg" 
                  alt="시대예보 표지"
@@ -235,8 +237,9 @@ function BookMookPassContent() {
                     <span className="text-xl font-medium text-white/40 ml-1">원</span>
                   </div>
                 </div>
+                {/* ✅ 수정됨: 수수료 -> 패스료 */}
                 <p className="text-right text-xs text-emerald-400/60">
-                  (매입가 6,600원 + 수수료 20%)
+                  (매입가 6,600원 + 패스료 2,000원)
                 </p>
               </div>
             </div>
@@ -247,6 +250,9 @@ function BookMookPassContent() {
       {/* 하단 설명 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
          <div className="p-6 bg-stone-50 rounded-2xl">
+            <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm text-neutral-700">
+                <RefreshCw size={20} />
+            </div>
             <h3 className="font-bold text-lg mb-2">어떻게 얻나요?</h3>
             <p className="text-neutral-600 text-sm leading-relaxed">
               가지고 계신 책을 북묵에 판매하세요.<br/>
@@ -255,11 +261,14 @@ function BookMookPassContent() {
             </p>
          </div>
          <div className="p-6 bg-stone-50 rounded-2xl">
+            <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm text-emerald-600">
+                <Ticket size={20} />
+            </div>
             <h3 className="font-bold text-lg mb-2">어떻게 쓰나요?</h3>
             <p className="text-neutral-600 text-sm leading-relaxed">
               결제 시 별도의 적용 없이,<br/>
               패스를 보유하고 있다면 <strong>자동으로 할인가가 적용</strong>되어<br/>
-              가장 저렴하게 구매할 수 있습니다.
+              가장 현명하게 구매할 수 있습니다.
             </p>
          </div>
       </div>

@@ -2,9 +2,9 @@
 /**
  * HGCC / BookMook – Next.js config
  * - CSP 헤더 유지
- * - next/image 외부 도메인 허용 (Unsplash/Drive/Aladin 등)
+ * - next/image 외부 도메인 허용 (Unsplash/Drive/Naver 등)
  * - ✅ 랜딩에서 쓰는 주소(/featured/*, /deals/*, /categories/*)를
- *   새 상세 경로(/chapters/*)로 리다이렉트
+ * 새 상세 경로(/chapters/*)로 리다이렉트
  */
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -27,11 +27,15 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'drive.google.com' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
-      { protocol: 'https', hostname: 'image.aladin.co.kr' },
-      { protocol: 'https', hostname: 'img.aladin.co.kr' },
-      { protocol: 'https', hostname: 'shopping-phinf.pstatic.net' }, // (네이버 썸네일 대비)
-      { protocol: 'https', hostname: 'books.google.com' }, // 필요 시
-      { protocol: 'https', hostname: 'nl.go.kr' }, // 서지 이미지 대비
+      
+      // ✅ 네이버 관련 도메인 (쇼핑, 책 썸네일, 검색 결과) 모두 추가
+      { protocol: 'https', hostname: 'shopping-phinf.pstatic.net' },
+      { protocol: 'https', hostname: 'bookthumb-phinf.pstatic.net' }, // 책 전용 썸네일
+      { protocol: 'https', hostname: 'search.pstatic.net' },          // 통합 검색 이미지
+
+      // ✅ 구글 북스 및 기타
+      { protocol: 'https', hostname: 'books.google.com' },
+      { protocol: 'https', hostname: 'nl.go.kr' }, 
       { protocol: 'https', hostname: 'dummyimage.com' },
     ],
   },
@@ -59,4 +63,4 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+export default nextConfig;
