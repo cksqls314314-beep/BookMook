@@ -19,7 +19,7 @@ function MainSearchBar() {
 
 export default function HomePage() {
   const [tab, setTab] = useState<HomeTab>('sentence');
-  const statsUrl = '/api/demo-stats';
+  const statsUrl = '/api/demo-stats'; // ✅ 이 주소를 통해 책 갯수와 표지를 가져옵니다.
 
   const railA = [
     {
@@ -29,17 +29,24 @@ export default function HomePage() {
       image:
         'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop',
       href: '/chapters/featured-new',
-      statsUrl,
+      statsUrl, // ✅ 통계 연결
     },
-    // ✅ [추가됨] 이웃의 서재 (방금 도착한 책 다음 순서)
     {
       slug: 'neighbors',
       title: '이웃의 서재',
       subtitle: '단골 손님의 추천 도서',
-      // 따뜻한 서재 느낌의 이미지
       image:
         'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2000&auto=format&fit=crop',
       href: '/chapters/neighbors',
+      statsUrl, // ✅ [수정됨] 여기에도 statsUrl을 넣어줘야 뱃지가 뜹니다!
+    },
+    {
+      slug: 'editors-pick',
+      title: '에디터 추천',
+      subtitle: '읽을 만한 것만',
+      image:
+        'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=2000&auto=format&fit=crop',
+      href: '/chapters/editors-pick',
       statsUrl,
     },
     {
@@ -60,7 +67,7 @@ export default function HomePage() {
       subtitle: '이야기에 잠기는 밤',
       image:
         'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2000&auto=format&fit=crop',
-      href: '/chapters/fiction',
+      href: '/categories/fiction',
       statsUrl,
     },
     {
@@ -145,16 +152,17 @@ export default function HomePage() {
         {tab === 'sentence' ? <HeroBackground /> : <AboutHero />}
       </div>
 
-      {/* 검색 섹션 (Suspense 적용된 컴포넌트 사용) */}
+      {/* 검색 섹션 */}
       <section id="search" className="relative z-10 pt-14 md:pt-24 lg:pt-28">
         <MainSearchBar />
       </section>
 
-      {/* 오늘의 추천 / 장르로 보기 레일 */}
+      {/* 추천 레일 */}
       <section className="mt-8 md:mt-12">
         <ChapterRail heading="오늘의 추천" chapters={railA as any} />
       </section>
 
+      {/* 장르 레일 */}
       <section className="mt-6 md:mt-10 mb-12 md:mb-16">
         <ChapterRail heading="장르로 보기" chapters={railB as any} />
       </section>
@@ -162,7 +170,6 @@ export default function HomePage() {
   );
 }
 
-/* 소개(소식) 탭 내용 */
 function AboutHero() {
   return (
     <section className="bg-neutral-50 h-full">
