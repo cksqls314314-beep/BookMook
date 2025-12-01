@@ -24,8 +24,8 @@ export default function HomePage() {
   const railA = [
     {
       slug: 'featured-new',
-      title: '도착한 도서',
-      subtitle: '목적한 곳에 다다름.',
+      title: '방금 도착한 책',
+      subtitle: '지금 막 진열됐어요',
       image:
         'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop',
       href: '/featured/new',
@@ -33,7 +33,7 @@ export default function HomePage() {
     },
     {
       slug: 'editors-pick',
-      title: '에디터 추천',
+      title: '단골 손님의 추천 도서',
       subtitle: '읽을 만한 것만',
       image:
         'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=2000&auto=format&fit=crop',
