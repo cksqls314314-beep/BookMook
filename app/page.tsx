@@ -28,16 +28,18 @@ export default function HomePage() {
       subtitle: '지금 막 진열됐어요',
       image:
         'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop',
-      href: '/featured/new',
+      href: '/chapters/featured-new',
       statsUrl,
     },
+    // ✅ [추가됨] 이웃의 서재 (방금 도착한 책 다음 순서)
     {
-      slug: 'editors-pick',
-      title: '단골 손님의 추천 도서',
-      subtitle: '읽을 만한 것만',
+      slug: 'neighbors',
+      title: '이웃의 서재',
+      subtitle: '단골 손님의 추천 도서',
+      // 따뜻한 서재 느낌의 이미지
       image:
-        'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=2000&auto=format&fit=crop',
-      href: '/featured/editors',
+        'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2000&auto=format&fit=crop',
+      href: '/chapters/neighbors',
       statsUrl,
     },
     {
@@ -46,7 +48,7 @@ export default function HomePage() {
       subtitle: '지금만 이 가격',
       image:
         'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=2000&auto=format&fit=crop',
-      href: '/deals/today',
+      href: '/chapters/deal',
       statsUrl,
     },
   ];
@@ -58,7 +60,7 @@ export default function HomePage() {
       subtitle: '이야기에 잠기는 밤',
       image:
         'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2000&auto=format&fit=crop',
-      href: '/categories/fiction',
+      href: '/chapters/fiction',
       statsUrl,
     },
     {
