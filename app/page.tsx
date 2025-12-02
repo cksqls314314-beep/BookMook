@@ -1,20 +1,11 @@
 // app/page.tsx
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState } from 'react';
 import HeroBackground from '@/components/HeroBackground';
 import ChapterRail from '@/components/ChapterRail';
-import SearchBar from '@/components/SearchBar';
 
 type HomeTab = 'sentence' | 'about';
-
-function MainSearchBar() {
-  return (
-    <Suspense fallback={<div className="h-12 w-full bg-gray-100 rounded-full animate-pulse" />}>
-      <SearchBar />
-    </Suspense>
-  );
-}
 
 export default function HomePage() {
   const [tab, setTab] = useState<HomeTab>('sentence');
@@ -39,7 +30,6 @@ export default function HomePage() {
       href: '/chapters/neighbors',
       statsUrl,
     },
-    // ✅ [수정됨] 에디터 추천 삭제 -> 오늘의 특가(가치 있는 발견)로 변경
     {
       slug: 'deal',
       title: '가벼워진 가격',
@@ -101,6 +91,7 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 md:px-8">
+      {/* 상단 중앙 탭 */}
       <div className="pt-6 md:pt-8 flex justify-center">
         <nav className="flex items-center gap-6 text-sm font-medium">
           <button
@@ -137,15 +128,15 @@ export default function HomePage() {
         </nav>
       </div>
 
+      {/* 랜딩 히어로 영역 */}
       <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[60vh] overflow-hidden bg-white mt-4">
         {tab === 'sentence' ? <HeroBackground /> : <AboutHero />}
       </div>
 
-      <section id="search" className="relative z-10 pt-14 md:pt-24 lg:pt-28">
-        <MainSearchBar />
-      </section>
+      {/* ✅ [삭제됨] 기존 검색 섹션 (MainSearchBar) 삭제 */}
 
-      <section className="mt-8 md:mt-12">
+      {/* 오늘의 추천 / 장르로 보기 레일 */}
+      <section className="mt-16 md:mt-20"> {/* 상단 여백 조정 */}
         <ChapterRail heading="오늘의 추천" chapters={railA as any} />
       </section>
 
@@ -156,6 +147,7 @@ export default function HomePage() {
   );
 }
 
+/* 소개(소식) 탭 내용 */
 function AboutHero() {
   return (
     <section className="bg-neutral-50 h-full">

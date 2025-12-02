@@ -3,11 +3,13 @@
 
 import { useState } from 'react';
 
+/**
+ * 이메일 인증 기반 회원가입 폼 (전화번호 제외)
+ */
 export default function RegisterForm() {
   const [name, setName] = useState('');
-  const [nickname, setNickname] = useState(''); // ✅ 별명 상태 추가
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  // phone 상태 삭제
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -32,9 +34,8 @@ export default function RegisterForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
-          nickname, // ✅ 별명 전송
           email,
-          phone,
+          // phone 제외
           password,
           confirmPassword,
         }),
@@ -61,10 +62,12 @@ export default function RegisterForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      {/* 이름 */}
       <div>
-        <label htmlFor="register-name" className="block text-sm font-medium text-gray-700">
-          이름 (실명)
+        <label
+          htmlFor="register-name"
+          className="block text-sm font-medium text-gray-700"
+        >
+          이름
         </label>
         <input
           id="register-name"
@@ -73,30 +76,15 @@ export default function RegisterForm() {
           onChange={(e) => setName(e.target.value)}
           required
           className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-black focus:ring-black"
-          placeholder="홍길동"
+          placeholder="이름"
         />
       </div>
 
-      {/* ✅ 별명 (추가됨) */}
       <div>
-        <label htmlFor="register-nickname" className="block text-sm font-medium text-gray-700">
-          별명 (사이트 활동용)
-        </label>
-        <input
-          id="register-nickname"
-          type="text"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          required
-          minLength={2}
-          className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-black focus:ring-black"
-          placeholder="책방지기"
-        />
-      </div>
-
-      {/* 이메일 */}
-      <div>
-        <label htmlFor="register-email" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="register-email"
+          className="block text-sm font-medium text-gray-700"
+        >
           이메일
         </label>
         <input
@@ -110,25 +98,13 @@ export default function RegisterForm() {
         />
       </div>
 
-      {/* 휴대폰 번호 */}
-      <div>
-        <label htmlFor="register-phone" className="block text-sm font-medium text-gray-700">
-          휴대폰 번호
-        </label>
-        <input
-          id="register-phone"
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-black focus:ring-black"
-          placeholder="'-' 없이 숫자만"
-        />
-      </div>
+      {/* 전화번호 입력란 삭제됨 */}
 
-      {/* 비밀번호 */}
       <div>
-        <label htmlFor="register-password" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="register-password"
+          className="block text-sm font-medium text-gray-700"
+        >
           비밀번호
         </label>
         <input
@@ -139,13 +115,15 @@ export default function RegisterForm() {
           required
           minLength={6}
           className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-black focus:ring-black"
-          placeholder="6자 이상"
+          placeholder="비밀번호"
         />
       </div>
 
-      {/* 비밀번호 확인 */}
       <div>
-        <label htmlFor="register-confirm" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="register-confirm"
+          className="block text-sm font-medium text-gray-700"
+        >
           비밀번호 확인
         </label>
         <input
@@ -168,7 +146,7 @@ export default function RegisterForm() {
         disabled={pending}
         className="w-full rounded-md bg-black py-2 px-4 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
       >
-        {pending ? '가입 처리 중…' : '회원가입'}
+        {pending ? '회원가입 중…' : '회원가입'}
       </button>
     </form>
   );

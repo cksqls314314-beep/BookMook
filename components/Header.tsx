@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Search, User, LogOut, Package, Settings, Menu, X, PenLine, Ticket } from 'lucide-react';
@@ -11,7 +11,7 @@ const CartCount = dynamic(() => import("@/components/CartCount"), { ssr: false }
 
 const menuItems = [
   { label: 'Home', href: '/' },
-  { label: '검색', href: '/#search' },
+  { label: '검색', href: '/search' }, // 링크 수정 (/search 페이지로 바로 이동 가능)
   { label: '소식', href: '/news' },
 ];
 
@@ -26,6 +26,10 @@ export default function Header() {
   } | null>(null);
   
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  // 검색 관련 상태
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch('/api/auth/me', { cache: 'no-store' })
@@ -49,6 +53,15 @@ export default function Header() {
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    setSearchQuery(''); // 검색 후 초기화
+    // 포커스 해제 (모바일 키보드 닫기 등)
+    if (searchInputRef.current) searchInputRef.current.blur();
+  };
+
   return (
     <>
       <style jsx global>{`
@@ -64,9 +77,8 @@ export default function Header() {
         }
       `}</style>
 
-      {/* ✅ [복구] 원래 스타일: bg-white/80 backdrop-blur-md, border-neutral-200 */}
       <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center px-4 py-4 md:px-6">
+        <div className="mx-auto flex max-w-6xl items-center px-4 py-4 md:px-6 h-16">
           
           <div className="flex w-24 items-center justify-start">
             <button
@@ -85,18 +97,37 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="flex w-24 items-center justify-end gap-1">
-            <button
-              type="button"
-              onClick={() => {
-                const el = document.getElementById('search');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/5 transition-colors text-black"
+          <div className="flex items-center justify-end gap-1">
+            
+            {/* ✅ [수정됨] 확장형 검색바 (Hover/Focus 시 확장) */}
+            <form 
+              onSubmit={handleSearch}
+              className="group relative flex items-center justify-end mr-1"
             >
-              <Search size={20} strokeWidth={1.8} />
-            </button>
+              <div className="flex items-center rounded-full border border-transparent bg-transparent transition-all duration-300 ease-in-out group-hover:bg-white group-hover:border-neutral-200 group-hover:shadow-sm group-focus-within:bg-white group-focus-within:border-neutral-200 group-focus-within:shadow-sm group-focus-within:w-64 group-hover:w-64 w-10 h-10 overflow-hidden">
+                
+                {/* 검색 아이콘 (버튼 역할) */}
+                <button 
+                  type="submit"
+                  className="flex-shrink-0 h-10 w-10 flex items-center justify-center text-black transition-colors hover:bg-black/5 rounded-full z-10"
+                  aria-label="검색"
+                >
+                  <Search size={20} strokeWidth={1.8} />
+                </button>
+                
+                {/* 입력창 (평소엔 숨김) */}
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="검색어 입력"
+                  className="h-full w-full bg-transparent text-sm outline-none px-2 text-neutral-800 placeholder:text-neutral-400 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"
+                />
+              </div>
+            </form>
 
+            {/* 유저 아이콘 & 드롭다운 */}
             <div 
               className="relative"
               onMouseEnter={() => setIsUserMenuOpen(true)}
@@ -114,7 +145,7 @@ export default function Header() {
                 )}
               </div>
 
-              {/* 드롭다운 메뉴 (원래 스타일 복구) */}
+              {/* 드롭다운 메뉴 */}
               {user && isUserMenuOpen && (
                 <div className="absolute right-0 top-full pt-2 w-64 z-50">
                   <div className="rounded-2xl border border-neutral-100 bg-white shadow-xl shadow-black/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
@@ -135,7 +166,6 @@ export default function Header() {
                       </div>
                       <p className="text-xs text-neutral-400 truncate">{user.email}</p>
 
-                      {/* 북묵 패스 카드 */}
                       <Link href="/guide#pass">
                         <div className="mt-3 rounded-xl bg-neutral-50 border border-neutral-100 p-3 flex items-center justify-between group hover:border-blue-200 hover:bg-blue-50/50 transition-all select-none cursor-pointer">
                           <div className="flex items-center gap-2.5">
@@ -220,11 +250,11 @@ export default function Header() {
               </div>
             ) : (
               <div className="flex flex-col gap-4">
-                 <p className="text-sm text-neutral-400">환영합니다, {user.nickname || user.name} 님</p>
+                 <p className="text-sm text-neutral-400">환영합니다, {user.nickname || user.name}님</p>
                  <Link href="/guide#pass" onClick={() => setOpen(false)} className="flex items-center gap-2 text-lg font-bold text-black hover:text-blue-600 transition-colors">
                     <Ticket size={20} className="text-blue-600" /> 패스: {user.exchangeTickets}장
                  </Link>
-                 <button onClick={handleLogout} className="text-xl text-left text-red-500 hover:text-red-700 mt-2">로그아웃</button>
+                 <button onClick={handleLogout} className="text-lg text-stone-400 hover:text-red-600 mt-2 font-serif">로그아웃</button>
               </div>
             )}
           </nav>
