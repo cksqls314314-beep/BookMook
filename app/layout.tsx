@@ -1,30 +1,30 @@
 // app/layout.tsx
-import './globals.css'
-import type { Metadata } from 'next'
-import { CartProvider } from '@/components/cart/CartProvider'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import type { Metadata } from "next";
+import "./globals.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { CartProvider } from '@/components/cart/CartProvider';
 
 export const metadata: Metadata = {
-  title: 'BookMook – 중고서점',
-  description: '쉽고 빠른 중고책 판매와 정보 안내',
-}
+  title: "BookMook - 이웃의 서재",
+  description: "헌책방의 새로운 경험, 북묵",
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="ko">
-      <body>
+      {/* ✅ [복구] 원래 스타일: 기본 배경, 기본 폰트 */}
+      <body className="bg-white text-black antialiased">
         <CartProvider>
-          {/* 상단 헤더 (로고 중앙 + 메뉴버튼 + 이모티콘 아이콘들) */}
           <Header />
-          <main className="container-page py-8">{children}</main>
+          {children}
           <Footer />
         </CartProvider>
       </body>
     </html>
-  )
+  );
 }
