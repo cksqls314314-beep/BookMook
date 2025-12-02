@@ -111,27 +111,23 @@ export default function BookDetail({ data }: Props) {
             </h1>
 
             <div className="space-y-3">
-              {/* ✅ 가격 영역 (수정됨: 가로 정렬) */}
               <div className="flex flex-wrap items-baseline gap-3">
-                {/* 판매가 */}
                 <span className="text-2xl font-bold text-black">
                   {displayPrice.toLocaleString()}원
                 </span>
                 
-                {/* 정가 */}
                 {listPrice > 0 && displayPrice < listPrice && (
                   <span className="text-lg font-normal text-muted-foreground line-through text-gray-400">
                     {listPrice.toLocaleString()}원
                   </span>
                 )}
 
-                {/* 북묵 패스 가격 */}
                 {data.passPrice && data.passPrice < displayPrice && (
                    <PassPriceTag price={data.passPrice} className="text-lg" showTooltip={true} />
                 )}
               </div>
 
-              {/* 상태 배지 */}
+              {/* 상태 배지 (남은 수량 삭제) */}
               {grade && (
                 <div className="flex flex-wrap items-center gap-2">
                   <span
@@ -142,11 +138,6 @@ export default function BookDetail({ data }: Props) {
                   >
                     {gradeLabelMap[grade]}
                   </span>
-                  {!allSoldOut && activeVariant?.count != null && (
-                    <span className="text-xs text-gray-500">
-                      남은 수량 {activeVariant.count}권
-                    </span>
-                  )}
                   {allSoldOut && (
                     <span className="text-xs text-red-500">품절</span>
                   )}
@@ -155,7 +146,6 @@ export default function BookDetail({ data }: Props) {
             </div>
           </header>
 
-          {/* 장바구니 액션 */}
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
@@ -179,7 +169,6 @@ export default function BookDetail({ data }: Props) {
             </button>
           </div>
 
-          {/* 소개 / 목차 영역 */}
           {hasIntroOrToc && (
             <div className="space-y-8 border-t pt-6">
               {data.intro && (

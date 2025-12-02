@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircleHeart, User } from "lucide-react"; // 아이콘 추가
+import { MessageCircleHeart, User } from "lucide-react";
 import type { Book } from "@/lib/getRecentBooks";
 import { formatKRW } from "@/lib/getRecentBooks";
 import PassPriceTag from "./PassPriceTag";
@@ -15,7 +15,6 @@ type Props = {
 
 export default function BookCard({ book, href = "#" }: Props) {
   const sell = book.priceSell || 0;
-  const list = book.priceList || 0;
   const passPrice = book.passPrice; 
 
   return (
@@ -23,7 +22,6 @@ export default function BookCard({ book, href = "#" }: Props) {
       href={href}
       className="block group relative rounded-2xl border border-black/5 bg-white shadow-sm hover:shadow-md transition-all"
     >
-      {/* ✅ 판매자 뱃지 (판매자 정보가 있을 때만 표시) */}
       {book.sellerName && (
         <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[11px] font-bold text-neutral-700 shadow-sm border border-black/5">
           <User size={12} className="text-emerald-600" />
@@ -31,7 +29,8 @@ export default function BookCard({ book, href = "#" }: Props) {
         </div>
       )}
 
-      <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-2xl bg-neutral-100">
+      {/* ✅ 배경색을 bg-white로 변경하여 회색 테두리 제거 */}
+      <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-2xl bg-white">
         <Image
           src={book.coverUrl}
           alt={book.title}
@@ -40,7 +39,6 @@ export default function BookCard({ book, href = "#" }: Props) {
           className="object-contain group-hover:scale-105 transition-transform duration-300"
         />
         
-        {/* ✅ 추천사 말풍선 오버레이 (추천사가 있을 때만 Hover시 등장) */}
         {book.recommendation && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-6">
             <div className="text-white text-center">
@@ -63,12 +61,8 @@ export default function BookCard({ book, href = "#" }: Props) {
 
         <div className="mt-3 flex flex-col gap-1">
           <div className="flex items-baseline gap-2">
+            {/* ✅ 정가(listPrice) 삭제 */}
             <span className="text-[15px] font-bold text-black">{formatKRW(sell)}</span>
-            {list > 0 && list > sell && (
-              <span className="text-xs text-neutral-400 line-through">
-                {formatKRW(list)}
-              </span>
-            )}
           </div>
 
           {passPrice && passPrice < sell && (
