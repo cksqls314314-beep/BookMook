@@ -8,7 +8,6 @@ import SearchBar from '@/components/SearchBar';
 
 type HomeTab = 'sentence' | 'about';
 
-// 1. 메인 페이지용 SearchBar 래퍼 컴포넌트 (Suspense 적용)
 function MainSearchBar() {
   return (
     <Suspense fallback={<div className="h-12 w-full bg-gray-100 rounded-full animate-pulse" />}>
@@ -19,7 +18,7 @@ function MainSearchBar() {
 
 export default function HomePage() {
   const [tab, setTab] = useState<HomeTab>('sentence');
-  const statsUrl = '/api/demo-stats'; // ✅ 이 주소를 통해 책 갯수와 표지를 가져옵니다.
+  const statsUrl = '/api/demo-stats';
 
   const railA = [
     {
@@ -29,7 +28,7 @@ export default function HomePage() {
       image:
         'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop',
       href: '/chapters/featured-new',
-      statsUrl, // ✅ 통계 연결
+      statsUrl,
     },
     {
       slug: 'neighbors',
@@ -38,21 +37,13 @@ export default function HomePage() {
       image:
         'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2000&auto=format&fit=crop',
       href: '/chapters/neighbors',
-      statsUrl, // ✅ [수정됨] 여기에도 statsUrl을 넣어줘야 뱃지가 뜹니다!
-    },
-    {
-      slug: 'editors-pick',
-      title: '에디터 추천',
-      subtitle: '읽을 만한 것만',
-      image:
-        'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=2000&auto=format&fit=crop',
-      href: '/chapters/editors-pick',
       statsUrl,
     },
+    // ✅ [수정됨] 에디터 추천 삭제 -> 오늘의 특가(가치 있는 발견)로 변경
     {
       slug: 'deal',
-      title: '오늘의 특가',
-      subtitle: '지금만 이 가격',
+      title: '가벼워진 가격',
+      subtitle: '오래된 책일수록 더 저렴해요',
       image:
         'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=2000&auto=format&fit=crop',
       href: '/chapters/deal',
@@ -110,7 +101,6 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 md:px-8">
-      {/* 상단 중앙 탭 */}
       <div className="pt-6 md:pt-8 flex justify-center">
         <nav className="flex items-center gap-6 text-sm font-medium">
           <button
@@ -147,22 +137,18 @@ export default function HomePage() {
         </nav>
       </div>
 
-      {/* 랜딩 히어로 영역 */}
       <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[60vh] overflow-hidden bg-white mt-4">
         {tab === 'sentence' ? <HeroBackground /> : <AboutHero />}
       </div>
 
-      {/* 검색 섹션 */}
       <section id="search" className="relative z-10 pt-14 md:pt-24 lg:pt-28">
         <MainSearchBar />
       </section>
 
-      {/* 추천 레일 */}
       <section className="mt-8 md:mt-12">
         <ChapterRail heading="오늘의 추천" chapters={railA as any} />
       </section>
 
-      {/* 장르 레일 */}
       <section className="mt-6 md:mt-10 mb-12 md:mb-16">
         <ChapterRail heading="장르로 보기" chapters={railB as any} />
       </section>
